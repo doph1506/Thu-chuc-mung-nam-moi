@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<title>Chúc mừng năm mới</title>
+
+<style>
+    body {
+        margin: 0;
+    }
+    .intro {
+        position: fixed;
+        inset: 0;
+        background: red;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 10;
+    }
+
+    .intro button {
+        background: yellow;
+        color: red;
+        font-size: 30px;
+        padding: 20px 40px;
+        border: none;
+        border-radius: 15px;
+        cursor: pointer;
+        font-weight: bold;
+        transition: 0.3s;
+    }
+
+    .intro button:hover {
+        background: pink;
+        transform: scale(1.1);
+    }
+    .box {
+        position: relative;
+        width: 100vw;
+        height: 100vh;
+        background-image: url('https://i.pinimg.com/1200x/83/33/cc/8333cc77114501b33b3f077ae7035382.jpg');
+        background-size: auto;
+        background-position: center;
+        overflow: hidden;
+    }
+
+    canvas {
+        position: fixed;
+        top: 0;
+        left: 0;
+        z-index: 5;
+        pointer-events: none;
+    }
+
+    .content {
+        position: relative;
+        z-index: 2;
+        text-align: center;
+        padding-top: 100px;
+    }
+
+    h1 {
+        color: yellow;
+        font-size: 50px;
+    }
+
+    p {
+        color: white;
+        font-size: 25px;
+    }
+</style>
+</head>
+
+<body>
+    <div class="intro" id="intro">
+    <button onclick="start()">Bấm vào đây nè hihii </button>
+</div>
+<div class="box">
+
+<canvas id="canvas"></canvas>
+
+<div class="content">
+    <h1>🎉 Chúc Mừng Năm Mới 🎉</h1>
+    <p>Phi đẹp trai, học bá</p>
+</div>
+
+</div>
+
+<script>
+const intro = document.getElementById("intro");
+const main = document.getElementById("main");
+
+function start() {
+    intro.style.display = "none";
+    main.style.display = "block";
+    resizeCanvas();
+    animate();
+    setInterval(createFirework, 500);
+}
+const canvas = document.getElementById("canvas");
+const ctx = canvas.getContext("2d");
+
+function resizeCanvas() {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+}
+resizeCanvas();
+window.addEventListener("resize", resizeCanvas);
+
+class Particle {
+    constructor(x, y) {
+        const angle = Math.random() * Math.PI * 2;
+        const speed = Math.random() * 6 + 2;
+
+        this.x = x;
+        this.y = y;
+        this.vx = Math.cos(angle) * speed;
+        this.vy = Math.sin(angle) * speed;
+        this.life = 100;
+        this.radius = Math.random() * 2 + 1;
+        this.color = `hsl(${Math.random() * 360},100%,60%)`;
+    }
+
+    update() {
+        this.x += this.vx;
+        this.y += this.vy;
+        this.vy += 0.04; // trọng lực
+        this.life--;
+    }
+
+    draw() {
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+        ctx.fillStyle = this.color;
+        ctx.fill();
+    }
+}
+
+let particles = [];
+
+function createFirework() {
+    const x = Math.random() * canvas.width;
+    const y = Math.random() * canvas.height; 
+
+    for (let i = 0; i < 120; i++) {
+        particles.push(new Particle(x, y));
+    }
+}
+
+function animate() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    particles = particles.filter(p => p.life > 0);
+    particles.forEach(p => {
+        p.update();
+        p.draw();
+    });
+
+    requestAnimationFrame(animate);
+}
+
+setInterval(createFirework, 500);
+animate();
+</script>
+
+</body>
+</html>
